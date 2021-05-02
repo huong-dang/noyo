@@ -10,6 +10,8 @@
 
 ### Steps
 
+-   Clone this repo
+-   Navigate into repo `cd noyo`
 -   Make a new python virtualenv `python3 -m venv ENV_NOYO`
 -   Activate it `source ENV_NOYO/bin/activate`
 -   Update pip `pip3 install --upgrade pip`
@@ -24,7 +26,7 @@ export APP_SETTINGS=development
 export FLASK_ENV=development
 ```
 
--   Run app `python3 run.py`
+-   Run app `python3 run.py` or `flask run`
 -   To test app `python3 test_app.py`
 
 ## Endpoints
