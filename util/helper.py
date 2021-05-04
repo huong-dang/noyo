@@ -11,13 +11,14 @@ def is_uuid(string, version=4):
 
 
 # Check if 2 dictionaries have the same values for the list of keys passed in
-def is_different(dict1, dict2, keys):
+def is_different(input, original, keys):
     has_changed = False
-    for key in keys:
-        dict1_val = dict1.get(key, "")
-        dict2_val = dict2.get(key, "")
-        if dict1_val != dict2_val:
-            has_changed = True
-            break
+    for key in input:
+        if key in keys:
+            dict1_val = input.get(key, "")
+            dict2_val = original.get(key, "")    
+            if dict1_val != dict2_val:
+                has_changed = True
+                break
+    
     return has_changed
-        

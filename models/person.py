@@ -56,6 +56,12 @@ class PersonModel(db.Model):
         return cls.query.filter_by(id=id, version=version).first()
 
     @classmethod
+    def is_unique(cls, first_name, middle_name, last_name) -> "PersonModel":
+        result = cls.query.filter_by(first_name=first_name, middle_name=middle_name, last_name=last_name).first()
+        return not result
+
+
+    @classmethod
     def find_all(cls) -> List["PersonModel"]:
         return cls.query.filter_by(latest=True).all()
 

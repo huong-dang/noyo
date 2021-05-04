@@ -47,7 +47,8 @@ class Person(Resource):
                     request_data = request.get_json()       
                     schema = PersonRequestSchema()       
                     proposed_modification = schema.load(request_data, partial=True)
-                    if is_different(proposed_modification, original_data, USER_INPUT_FIELDS):
+                    
+                    if proposed_modification and is_different(proposed_modification, original_data, USER_INPUT_FIELDS):
                         updated_person = PersonModel(
                             id=person_data.id,
                             first_name=proposed_modification.get('first_name') or original_data.get('first_name'),
@@ -105,21 +106,31 @@ class PersonsList(Resource):
             schema = PersonRequestSchema()
             new_person_request = schema.load(request_data)        
             unique_id = uuid.uuid4()
-            person = PersonModel(
-                        id=unique_id, 
-                        first_name=new_person_request.get('first_name'),
-                        middle_name=new_person_request.get('middle_name'),
-                        last_name=new_person_request.get('last_name'),
-                        age=new_person_request.get('age'),
-                        email=new_person_request.get('email'),
-                        version=1,
-                        latest=True
-                    )
-            person.save_to_db()
-            return {
-                        "message": f"Person successfully created!", 
-                        "id": str(person.id)
-                    }, 201
+            first_name = new_person_request.get('first_name')
+            middle_name = new_person_request.get('middle_name')
+            last_name = new_person_request.get('last_name')
+            print(new_person_request)
+            is_unique_name = PersonModel.is_unique(first_name, middle_name, last_name)
+            if is_unique_name:
+                person = PersonModel(
+                            id=unique_id, 
+                            first_name=new_person_request.get('first_name'),
+                            middle_name=new_person_request.get('middle_name'),
+                            last_name=new_person_request.get('last_name'),
+                            age=new_person_request.get('age'),
+                            email=new_person_request.get('email'),
+                            version=1,
+                            latest=True
+                        )
+                person.save_to_db()
+                return {
+                            "message": f"Person successfully created!", 
+                            "id": str(person.id)
+                }, 201
+            else:
+                return {
+                    "message": "Resource with the specified name identifier already exists"
+                }, 409
         except ValidationError as error:
             return error.messages, 400
         except Exception as error:
